@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="page-header text-center">
+  <h1 style="color:darkblue;font-family:verdana;"> To Do Task</h1>
+  <p style="color: blueviolet;">Let's organize our task list.</p>
+</div>
+  
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-4" >
+      <div class="panel panel-danger" style="height: 1000px;">
+        <div class="panel-heading">To Do</div>
+        <div class="panel-body" id="toDoCardPanel"></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-primary"  style="height: 1000px;">
+        <div class="panel-heading">In Progress</div>
+        <div class="panel-body" id="InProgressCardPanel"></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-success"  style="height: 1000px;">
+        <div class="panel-heading">Done</div>
+        <div class="panel-body" id="DoneCardPanel"></div>
+      </div>
+    </div>
+  </div>
+    </div>
+
+</body>
+<script>
+  function task(title,description,status){
+    this.title =title;
+    this.description =description;
+    this.status = status;
+
+  }
+  $(document).ready( function () {
+  var task1= new task("Task1", "This is first priority task" ,"ToDo");
+  var task2= new task("Task2", "This is second priority task", "ToDo");
+  var task3= new task("Task3", "This is third priority task" ,"ToDo");
+  var tasks =[task1,task2,task3];
+  initialize(tasks);
+});
+var toDoContainer = document.getElementById("toDoCardPanel");
+var InProgressContainer = document.getElementById("InProgressCardPanel");
+var DoneContainer = document.getElementById("DoneCardPanel");
+
+function initialize(tasks){
+  tasks.forEach(task => {
+    taskCard = createToDoCard(task);
+    addToDoCard(taskCard);
+  });
+}
+
+function addToDoCard(card){
+  toDoContainer.innerHTML+=card;
+}
+
+function createToDoCard(toDotask){
+const toDoCard =`<div class="panel panel-danger" id="toDo${toDotask.title}"style="height: 300px;">
+  <div class="panel-heading">${toDotask.title}</div>
+  <div class="panel-body" style="height: 200px;">${toDotask.description}</div>
+  <div class="panel-footer" style="background-color:white" ><button type="button" class="btn btn-primary" onclick="inProgressClick('${encodeURIComponent(JSON.stringify(toDotask))}')">In Progress</button>&nbsp;&nbsp;&nbsp;
+<button type="button" class="btn btn-success" onclick="DoneClick('${encodeURIComponent(JSON.stringify(toDotask))}')">Done</button>
+</div>
+</div>`
+return toDoCard;
+}
+function inProgressClick(task){
+  task = JSON.parse(decodeURIComponent(task));
+  var id="toDo"+task.title;
+  var toDocardToRemove = document.getElementById(id);
+  toDocardToRemove.remove();
+  task.status="inProgress";
+  addProgressCard(task);
+
+}
+function DoneClick(task){
+  task = JSON.parse(decodeURIComponent(task));
+  var id= task.status==="ToDo"?"toDo"+task.title :"inProgress"+task.title;
+  var cardToRemove = document.getElementById(id);
+  cardToRemove.remove();
+  addDoneCard(task);
+
+}
+function addProgressCard(task){
+const inProgressCard =`<div class="panel panel-primary" id="inProgress${task.title}" style="height: 300px;">
+  <div class="panel-heading">${task.title}</div>
+  <div class="panel-body" style="height: 200px;">${task.description}</div>
+  <div class="panel-footer" style="background-color:white" >
+<button type="button" class="btn btn-success" onclick="DoneClick('${encodeURIComponent(JSON.stringify(task))}')">Done</button>
+</div>
+</div>`
+InProgressContainer.innerHTML+= inProgressCard ;
+}
+function addDoneCard(task){
+const DoneCard =`<div class="panel panel-success" style="height: 300px;">
+  <div class="panel-heading">${task.title}</div>
+  <div class="panel-body" style="height: 200px;">${task.description}</div>
+</div>
+</div>`
+DoneContainer.innerHTML+=DoneCard;
+}
+</script>
+</html>
